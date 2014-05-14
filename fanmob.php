@@ -19,6 +19,23 @@ function initialize_plugin() {
      * synchronously, but the JS SDK needs that #fnmb-jssdk ID on the
      * script tag. */
     add_action('wp_footer', NS . 'print_script_loader');
+    add_shortcode('fanmob', NS . 'poll_shortcode');
+}
+
+function poll_shortcode($atts) {
+    $a = shortcode_atts(array(
+        'id' => null
+    ), $atts);
+
+    $id = $a['id'];
+    if (empty($id)) {
+        return 'usage: [fanmob id="poll-id"]';
+    }
+
+    $href = "https://www.fanmob.us/p/$id";
+
+    return "<a href='" . esc_attr($href) . "' data-fnmb-embed='poll' " .
+        "data-fnmb-id='" . esc_attr($id) . "'>View poll on FanMob</a>";
 }
 
 function print_script_loader() {
