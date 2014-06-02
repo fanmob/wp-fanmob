@@ -6,7 +6,7 @@ namespace Fanmob;
  * Plugin Name: FanMob
  * Plugin URI: https://github.com/fanmob/wp-fanmob
  * Description: Adds support for embeddable FanMob poll widgets.
- * Version: 0.2.0
+ * Version: 0.2.1
  * Author: FanMob <tom@fanmob.us>
  * Author URI: https://www.fanmob.us/
  * License: MIT
