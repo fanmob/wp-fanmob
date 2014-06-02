@@ -46,8 +46,6 @@ class UserPollsWidget extends \WP_Widget {
       echo $before_title . $title . $after_title;
     }
 
-    /* TODO: this isn't user-configurable... it should be eventually. */
-
     if (isset($instance['height'])) {
       $height = $instance['height'] . 'px';
     } else {
