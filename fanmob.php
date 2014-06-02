@@ -48,7 +48,7 @@ class UserPollsWidget extends \WP_Widget {
     if (isset($instance['height'])) {
       $height = $instance['height'];
     } else {
-      $height = '600px';
+      $height = '500px';
     }
 
     if (isset($instance['handle'])) {
