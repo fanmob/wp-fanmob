@@ -45,7 +45,7 @@ abstract class MultiPollsWidget extends \WP_Widget {
 ?>
 <iframe src="<? echo esc_attr($url); ?>"
         style="display: block; border: none; outline: none;
-               min-width: 285px; height: <? echo esc_attr($height)?>;">
+               min-width: 295px; height: <? echo esc_attr($height)?>;">
 </iframe>
     <?php
 
