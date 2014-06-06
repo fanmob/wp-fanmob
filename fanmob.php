@@ -2,6 +2,10 @@
 
 namespace Fanmob;
 
+define(__NAMESPACE__ . '\NS', __NAMESPACE__ . '\\');
+
+require_once 'multi_polls_widget.php';
+
 /**
  * Plugin Name: FanMob
  * Plugin URI: https://github.com/fanmob/wp-fanmob
@@ -12,14 +16,11 @@ namespace Fanmob;
  * License: MIT
  */
 
-define(__NAMESPACE__ . '\NS', __NAMESPACE__ . '\\');
-
-class UserPollsWidget extends \WP_Widget {
-  const DEFAULT_HEIGHT = 500;
+class UserPollsWidget extends MultiPollsWidget {
   const DEFAULT_HANDLE = 'twitbeck3';
 
   function __construct() {
-    parent::__construct(
+    \WP_Widget::__construct(
       'fanmob_userpolls_widget',
       __('FanMob User Polls', 'text_domain'),
       array('description' =>
@@ -27,129 +28,26 @@ class UserPollsWidget extends \WP_Widget {
     );
   }
 
-  /**
-	 * Front-end display of widget.
-	 *
-	 * @see WP_Widget::widget()
-	 *
-	 * @param array $args     Widget arguments.
-	 * @param array $instance Saved values from database.
-	 */
-  public function widget($args, $instance) {
-    extract($args);
+  protected static function embed_url($handle) {
+    return "https://www.fanmob.us/embed/user_polls/$handle";
+  }
+}
 
-    $title = apply_filters('widget_title', $instance['title']);
+class GroupPollsWidget extends MultiPollsWidget {
+  const DEFAULT_HANDLE = 'Cover32';
 
-    echo $before_widget;
-
-    if ($title) {
-      echo $before_title . $title . $after_title;
-    }
-
-    if (isset($instance['height'])) {
-      $height = $instance['height'] . 'px';
-    } else {
-      $height = static::DEFAULT_HEIGHT . 'px';
-    }
-
-    if (isset($instance['handle'])) {
-      $handle = $instance['handle'];
-      $url = "https://www.fanmob.us/embed/user_polls/$handle";
-
-      /*
-       * TODO: don't create the iframe directly, instead a div or
-       * link or thing that sdk.js replaces with an iframe.
-       */
-?>
-<iframe src="<? echo esc_attr($url); ?>"
-        style="display: block; border: none; outline: none;
-               min-width: 285px; height: <? echo esc_attr($height)?>;">
-</iframe>
-    <?php
-
-    } else {
-      echo '<p>Missing the handle for this widget (set in admin).</p>';
-    }
-
-    echo $after_widget;
+  function __construct() {
+    \WP_Widget::__construct(
+      'fanmob_grouppolls_widget',
+      __('FanMob Group Polls', 'text_domain'),
+      array('description' =>
+            __('Show polls created by all users of a FanMob group.', 'text_domain'))
+    );
   }
 
-	/**
-	 * Back-end widget form.
-	 *
-	 * @see WP_Widget::form()
-	 *
-	 * @param array $instance Previously saved values from database.
-	 */
-	public function form( $instance ) {
-		if (isset($instance['title'])) {
-			$title = $instance['title'];
-		}
-		else {
-			$title = __('Poll', 'text_domain');
-		}
-
-		if (isset($instance['handle'])) {
-			$handle = $instance['handle'];
-		}
-		else {
-			$handle = static::DEFAULT_HANDLE;
-		}
-
-    if (isset($instance['height'])) {
-			$height = $instance['height'];
-		}
-		else {
-			$height = static::DEFAULT_HEIGHT;
-		}
-
-?>
-<p>
-  <label for="<?php echo $this->get_field_id( 'title' ); ?>">
-    <?php _e( 'Title:' ); ?>
-  </label>
-  <input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>"
-         name="<?php echo $this->get_field_name( 'title' ); ?>"
-         type="text" value="<?php echo esc_attr( $title ); ?>">
-
-  <label for="<?php echo $this->get_field_id( 'handle' ); ?>">
-    <?php _e( 'FanMob username:' ); ?>
-  </label>
-  <input class="widefat" id="<?php echo $this->get_field_id( 'handle' ); ?>"
-         name="<?php echo $this->get_field_name( 'handle' ); ?>"
-         type="text" value="<?php echo esc_attr( $handle ); ?>">
-
-  <label for="<?php echo $this->get_field_id( 'height' ); ?>">
-    <?php _e( 'Height (in px)' ); ?>
-  </label>
-  <input class="widefat" id="<?php echo $this->get_field_id( 'height' ); ?>"
-         name="<?php echo $this->get_field_name( 'height' ); ?>"
-         type="text" value="<?php echo esc_attr( $height ); ?>">
-</p>
-  <?php
+  protected static function embed_url($handle) {
+    return "https://www.fanmob.us/embed/group_polls/$handle";
   }
-
-
-	/**
-	 * Sanitize widget form values as they are saved.
-	 *
-	 * @see WP_Widget::update()
-	 *
-	 * @param array $new_instance Values just sent to be saved.
-	 * @param array $old_instance Previously saved values from database.
-	 *
-	 * @return array Updated safe values to be saved.
-	 */
-	public function update($new_instance, $old_instance) {
-		$instance = array();
-		$instance['title'] = (!empty($new_instance['title'])) ? $new_instance['title'] : '';
-    $instance['handle'] = (!empty($new_instance['handle'])) ? $new_instance['handle'] : null;
-    $instance['height'] = (!empty($new_instance['height'])) ?
-                          intval($new_instance['height'])
-                                : static::DEFAULT_HEIGHT;
-
-		return $instance;
-	}
 }
 
 function initialize_plugin() {
@@ -195,4 +93,5 @@ function print_script_loader() {
 add_action('init', NS . 'initialize_plugin');
 add_action('widgets_init', function () {
   register_widget(NS . 'UserPollsWidget');
+  register_widget(NS . 'GroupPollsWidget');
 });
