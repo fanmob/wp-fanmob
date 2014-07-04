@@ -28,7 +28,7 @@ class UserPollsWidget extends MultiPollsWidget {
     );
   }
 
-  protected static function embed_url($handle) {
+  protected static function embed_url_base($handle) {
     return "https://www.fanmob.us/embed/user_polls/$handle";
   }
 }
@@ -45,7 +45,7 @@ class GroupPollsWidget extends MultiPollsWidget {
     );
   }
 
-  protected static function embed_url($handle) {
+  protected static function embed_url_base($handle) {
     return "https://www.fanmob.us/embed/group_polls/$handle";
   }
 }

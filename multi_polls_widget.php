@@ -5,18 +5,27 @@ namespace Fanmob;
 abstract class MultiPollsWidget extends \WP_Widget {
   const DEFAULT_HEIGHT = 500;
 
-  protected static function embed_url($handle) {
+  protected static function embed_url_base($handle) {
     return "FIXME";
   }
 
+  protected static function embed_url($handle, $topic) {
+    $base = static::embed_url_base($handle);
+    if (is_null($topic)) {
+      return $base;
+    } else {
+      return $base . "?topic=" . urlencode($topic);
+    }
+  }
+
   /**
-	 * Front-end display of widget.
-	 *
-	 * @see WP_Widget::widget()
-	 *
-	 * @param array $args     Widget arguments.
-	 * @param array $instance Saved values from database.
-	 */
+   * Front-end display of widget.
+   *
+   * @see WP_Widget::widget()
+   *
+   * @param array $args     Widget arguments.
+   * @param array $instance Saved values from database.
+   */
   public function widget($args, $instance) {
     extract($args);
 
@@ -34,9 +43,15 @@ abstract class MultiPollsWidget extends \WP_Widget {
       $height = static::DEFAULT_HEIGHT . 'px';
     }
 
+    if (isset($instance['topic'])) {
+      $topic = $instance['topic'];
+    } else {
+      $topic = null;
+    }
+
     if (isset($instance['handle'])) {
       $handle = $instance['handle'];
-      $url = static::embed_url($handle);
+      $url = static::embed_url($handle, $topic);
 
       /*
        * TODO: don't create the iframe directly, instead a div or
@@ -47,7 +62,7 @@ abstract class MultiPollsWidget extends \WP_Widget {
         style="display: block; border: none; outline: none;
                min-width: 295px; height: <? echo esc_attr($height)?>;">
 </iframe>
-    <?php
+<?php
 
     } else {
       echo '<p>Missing the handle for this widget (set in admin).</p>';
@@ -56,34 +71,34 @@ abstract class MultiPollsWidget extends \WP_Widget {
     echo $after_widget;
   }
 
-	/**
-	 * Back-end widget form.
-	 *
-	 * @see WP_Widget::form()
-	 *
-	 * @param array $instance Previously saved values from database.
-	 */
-	public function form( $instance ) {
-		if (isset($instance['title'])) {
-			$title = $instance['title'];
-		}
-		else {
-			$title = __('Poll', 'text_domain');
-		}
+  /**
+   * Back-end widget form.
+   *
+   * @see WP_Widget::form()
+   *
+   * @param array $instance Previously saved values from database.
+   */
+  public function form( $instance ) {
+    if (isset($instance['title'])) {
+      $title = $instance['title'];
+    }
+    else {
+      $title = __('Poll', 'text_domain');
+    }
 
-		if (isset($instance['handle'])) {
-			$handle = $instance['handle'];
-		}
-		else {
-			$handle = static::DEFAULT_HANDLE;
-		}
+    if (isset($instance['handle'])) {
+      $handle = $instance['handle'];
+    }
+    else {
+      $handle = static::DEFAULT_HANDLE;
+    }
 
     if (isset($instance['height'])) {
-			$height = $instance['height'];
-		}
-		else {
-			$height = static::DEFAULT_HEIGHT;
-		}
+      $height = $instance['height'];
+    }
+    else {
+      $height = static::DEFAULT_HEIGHT;
+    }
 
 ?>
 <p>
@@ -108,26 +123,26 @@ abstract class MultiPollsWidget extends \WP_Widget {
          name="<?php echo $this->get_field_name( 'height' ); ?>"
          type="text" value="<?php echo esc_attr( $height ); ?>">
 </p>
-  <?php
+<?php
   }
-	/**
-	 * Sanitize widget form values as they are saved.
-	 *
-	 * @see WP_Widget::update()
-	 *
-	 * @param array $new_instance Values just sent to be saved.
-	 * @param array $old_instance Previously saved values from database.
-	 *
-	 * @return array Updated safe values to be saved.
-	 */
-	public function update($new_instance, $old_instance) {
-		$instance = array();
-		$instance['title'] = (!empty($new_instance['title'])) ? $new_instance['title'] : '';
+  /**
+   * Sanitize widget form values as they are saved.
+   *
+   * @see WP_Widget::update()
+   *
+   * @param array $new_instance Values just sent to be saved.
+   * @param array $old_instance Previously saved values from database.
+   *
+   * @return array Updated safe values to be saved.
+   */
+  public function update($new_instance, $old_instance) {
+    $instance = array();
+    $instance['title'] = (!empty($new_instance['title'])) ? $new_instance['title'] : '';
     $instance['handle'] = (!empty($new_instance['handle'])) ? $new_instance['handle'] : null;
     $instance['height'] = (!empty($new_instance['height'])) ?
-                          intval($new_instance['height'])
-                                : static::DEFAULT_HEIGHT;
+      intval($new_instance['height'])
+      : static::DEFAULT_HEIGHT;
 
-		return $instance;
-	}
+    return $instance;
+  }
 }
