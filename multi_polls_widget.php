@@ -100,6 +100,12 @@ abstract class MultiPollsWidget extends \WP_Widget {
       $height = static::DEFAULT_HEIGHT;
     }
 
+    if (isset($instance['topic'])) {
+      $topic = $instance['topic'];
+    } else {
+      $topic = null;
+    }
+
 ?>
 <p>
   <label for="<?php echo $this->get_field_id( 'title' ); ?>">
@@ -115,6 +121,13 @@ abstract class MultiPollsWidget extends \WP_Widget {
   <input class="widefat" id="<?php echo $this->get_field_id( 'handle' ); ?>"
          name="<?php echo $this->get_field_name( 'handle' ); ?>"
          type="text" value="<?php echo esc_attr( $handle ); ?>">
+
+  <label for="<?php echo $this->get_field_id( 'topic' ); ?>">
+    <?php _e( 'Topic (optional):' ); ?>
+  </label>
+  <input class="widefat" id="<?php echo $this->get_field_id( 'topic' ); ?>"
+         name="<?php echo $this->get_field_name( 'topic' ); ?>"
+         type="text" value="<?php echo esc_attr( $topic ); ?>">
 
   <label for="<?php echo $this->get_field_id( 'height' ); ?>">
     <?php _e( 'Height (in px)' ); ?>
@@ -139,6 +152,7 @@ abstract class MultiPollsWidget extends \WP_Widget {
     $instance = array();
     $instance['title'] = (!empty($new_instance['title'])) ? $new_instance['title'] : '';
     $instance['handle'] = (!empty($new_instance['handle'])) ? $new_instance['handle'] : null;
+    $instance['topic'] = (!empty($new_instance['topic'])) ? $new_instance['topic'] : null;
     $instance['height'] = (!empty($new_instance['height'])) ?
       intval($new_instance['height'])
       : static::DEFAULT_HEIGHT;
