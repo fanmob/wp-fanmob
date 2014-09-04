@@ -90,8 +90,22 @@ function print_script_loader() {
 
 }
 
+function media_buttons() {
+  echo "<a href='#' class='button'>";
+  echo "<span class='wp-media-buttons-icon fm-media-button-poll-icon'></span>";
+  echo " Add FanMob Poll";
+  echo "</a>";
+}
+
+function load_admin_scripts($hook) {
+  wp_register_style(NS . 'wp_admin_css', plugins_url('css/admin.css', __FILE__));
+  wp_enqueue_style(NS . 'wp_admin_css');
+}
+
 add_action('init', NS . 'initialize_plugin');
 add_action('widgets_init', function () {
   register_widget(NS . 'UserPollsWidget');
   register_widget(NS . 'GroupPollsWidget');
 });
+add_action('media_buttons', NS . 'media_buttons', 11);
+add_action('admin_enqueue_scripts', NS . 'load_admin_scripts');
