@@ -2,8 +2,7 @@
 
 namespace Fanmob;
 
-define(__NAMESPACE__ . '\NS', __NAMESPACE__ . '\\');
-
+require_once 'constants.php';
 require_once 'multi_polls_widget.php';
 
 /**
@@ -29,7 +28,7 @@ class UserPollsWidget extends MultiPollsWidget {
   }
 
   protected static function embed_url_base($handle) {
-    return "https://www.fanmob.us/embed/user_polls/$handle";
+    return FANMOB_BASE . "embed/user_polls/$handle";
   }
 }
 
@@ -46,7 +45,7 @@ class GroupPollsWidget extends MultiPollsWidget {
   }
 
   protected static function embed_url_base($handle) {
-    return "https://www.fanmob.us/embed/group_polls/$handle";
+    return FANMOB_BASE . "embed/group_polls/$handle";
   }
 }
 
@@ -69,7 +68,7 @@ function poll_shortcode($atts) {
     return 'usage: [fanmob id="poll-id"]';
   }
 
-  $href = "https://www.fanmob.us/p/$id";
+  $href = FANMOB_BASE . "p/$id";
 
   return "<a href='" . esc_attr($href) . "' data-fnmb-embed='poll' " .
          "data-fnmb-id='" . esc_attr($id) . "'>View poll on FanMob</a>";
@@ -84,7 +83,7 @@ function print_script_loader() {
      js = d.createElement(s); js.id = id;
      js.src = or + "/assets/sdk.js";
      fjs.parentNode.insertBefore(js, fjs);
-   }(document,'script','fnmb-jssdk','https://www.fanmob.us'));
+    }(document,'script','fnmb-jssdk','<?= FANMOB_BASE ?>'));
   </script>
 <?php
 
