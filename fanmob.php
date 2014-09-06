@@ -50,11 +50,9 @@ class GroupPollsWidget extends MultiPollsWidget {
 }
 
 function initialize_plugin() {
-  /* would use wp_enqueue_scripts and just load the script
-   * synchronously, but the JS SDK needs that #fnmb-jssdk ID on the
-   * script tag. */
-
   add_action('wp_footer', NS . 'print_script_loader');
+  add_action('media_buttons', NS . 'media_buttons', 11);
+  add_action('admin_enqueue_scripts', NS . 'load_admin_scripts');
   add_shortcode('fanmob', NS . 'poll_shortcode');
 }
 
@@ -70,7 +68,7 @@ function poll_shortcode($atts) {
 
   $href = FANMOB_BASE . "p/$id";
 
-  return "<a href='" . esc_attr($href) . "' data-fnmb-embed='poll' " .
+  return "<a href='" . esc_url($href) . "' data-fnmb-embed='poll' " .
          "data-fnmb-id='" . esc_attr($id) . "'>View poll on FanMob</a>";
 }
 
@@ -90,7 +88,9 @@ function print_script_loader() {
 }
 
 function media_buttons() {
-  echo "<a href='#' class='button'>";
+  add_thickbox();
+  $url = FANMOB_BASE . "/composer/?iframe&TB_iframe=true";
+  echo "<a href='" . esc_url($url) . "' class='button thickbox' title='FanMob Poll'>";
   echo "<span class='wp-media-buttons-icon fm-media-button-poll-icon'></span>";
   echo " Add FanMob Poll";
   echo "</a>";
@@ -106,5 +106,3 @@ add_action('widgets_init', function () {
   register_widget(NS . 'UserPollsWidget');
   register_widget(NS . 'GroupPollsWidget');
 });
-add_action('media_buttons', NS . 'media_buttons', 11);
-add_action('admin_enqueue_scripts', NS . 'load_admin_scripts');
