@@ -11,4 +11,4 @@ if (getenv("FANMOB_BASE_URL")) {
 }
 
 define(__NAMESPACE__ . '\FANMOB_BASE', $base_url);
-
+define(__NAMESPACE__ . '\FANMOB_ORIGIN', substr($base_url, 0, -1));

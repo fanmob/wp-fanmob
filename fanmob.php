@@ -89,7 +89,9 @@ function print_script_loader() {
 
 function media_buttons() {
   add_thickbox();
-  $url = FANMOB_BASE . "/composer/?iframe&TB_iframe=true";
+  $url = FANMOB_BASE . "new-poll/?context=wordpress";
+  $url .= "&context_origin=" . urlencode(FANMOB_ORIGIN);
+  $url .= "&TB_iframe=true";
   echo "<a href='" . esc_url($url) . "' class='button thickbox' title='FanMob Poll'>";
   echo "<span class='wp-media-buttons-icon fm-media-button-poll-icon'></span>";
   echo " Add FanMob Poll";
@@ -99,6 +101,12 @@ function media_buttons() {
 function load_admin_scripts($hook) {
   wp_register_style(NS . 'wp_admin_css', plugins_url('css/admin.css', __FILE__));
   wp_enqueue_style(NS . 'wp_admin_css');
+  wp_enqueue_script(NS . 'wp_admin_js',
+      plugins_url('js/admin.js', __FILE__),
+      array('jquery'));
+  wp_localize_script(NS . 'wp_admin_js', 'WpFanmob', array(
+      'origin' => FANMOB_ORIGIN
+  ));
 }
 
 add_action('init', NS . 'initialize_plugin');
