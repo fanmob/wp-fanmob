@@ -10,7 +10,7 @@ require_once 'domain_polls_widget.php';
  * Plugin Name: FanMob
  * Plugin URI: https://github.com/fanmob/wp-fanmob
  * Description: Adds support for embeddable FanMob poll widgets.
- * Version: 0.5.1
+ * Version: 0.6.0
  * Author: FanMob <tom@fanmob.us>
  * Author URI: https://www.fanmob.us/
  * License: MIT
