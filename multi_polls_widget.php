@@ -3,7 +3,7 @@
 namespace Fanmob;
 
 abstract class MultiPollsWidget extends \WP_Widget {
-  const DEFAULT_HEIGHT = 500;
+  const DEFAULT_HEIGHT = 350;
   const NEEDS_HANDLE = true; // FIXME: remove when removing user/group widgets
 
   abstract protected static function embed_url_base($handle);
