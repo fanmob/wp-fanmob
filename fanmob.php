@@ -4,6 +4,7 @@ namespace Fanmob;
 
 require_once 'constants.php';
 require_once 'multi_polls_widget.php';
+require_once 'domain_polls_widget.php';
 
 /**
  * Plugin Name: FanMob
@@ -15,16 +16,18 @@ require_once 'multi_polls_widget.php';
  * License: MIT
  */
 
+/**
+ * @deprecated Use a domain polls widget
+ */
 class UserPollsWidget extends MultiPollsWidget {
   const DEFAULT_HANDLE = 'twitbeck3';
 
   function __construct() {
-    \WP_Widget::__construct(
-      'fanmob_userpolls_widget',
-      __('FanMob User Polls', 'text_domain'),
-      array('description' =>
-            __('Show polls created by a FanMob user.', 'text_domain'))
-    );
+    $desc = __('Show polls created by a FanMob user. This widget will be removed; ' .
+      'use a FanMob Site Polls widget instead.', 'text_domain');
+    \WP_Widget::__construct('fanmob_userpolls_widget',
+      __('FanMob User Polls (DEPRECATED)', 'text_domain'),
+      array('description' => $desc));
   }
 
   protected static function embed_url_base($handle) {
@@ -32,16 +35,17 @@ class UserPollsWidget extends MultiPollsWidget {
   }
 }
 
+/**
+ * @deprecated Use a domain polls widget
+ */
 class GroupPollsWidget extends MultiPollsWidget {
   const DEFAULT_HANDLE = 'Cover32';
-
   function __construct() {
-    \WP_Widget::__construct(
-      'fanmob_grouppolls_widget',
-      __('FanMob Group Polls', 'text_domain'),
-      array('description' =>
-            __('Show polls created by all users of a FanMob group.', 'text_domain'))
-    );
+    $desc = __('Show polls created by all users of a FanMob group. This widget will ' .
+      'be removed; use a FanMob Site Polls widget instead.', 'text_domain');
+    \WP_Widget::__construct('fanmob_grouppolls_widget',
+      __('FanMob Group Polls (DEPRECATED)', 'text_domain'),
+      array('description' => $desc));
   }
 
   protected static function embed_url_base($handle) {
@@ -113,4 +117,5 @@ add_action('init', NS . 'initialize_plugin');
 add_action('widgets_init', function () {
   register_widget(NS . 'UserPollsWidget');
   register_widget(NS . 'GroupPollsWidget');
+  register_widget(NS . 'DomainPollsWidget');
 });

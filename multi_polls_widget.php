@@ -4,10 +4,9 @@ namespace Fanmob;
 
 abstract class MultiPollsWidget extends \WP_Widget {
   const DEFAULT_HEIGHT = 500;
+  const NEEDS_HANDLE = true; // FIXME: remove when removing user/group widgets
 
-  protected static function embed_url_base($handle) {
-    return "FIXME";
-  }
+  abstract protected static function embed_url_base($handle);
 
   protected static function embed_url($handle, $topic) {
     $base = static::embed_url_base($handle);
@@ -49,7 +48,9 @@ abstract class MultiPollsWidget extends \WP_Widget {
       $topic = null;
     }
 
-    if (isset($instance['handle'])) {
+    if (static::NEEDS_HANDLE && empty($instance['handle'])) {
+      echo '<p>Missing the handle for this widget (set in admin).</p>';
+    } else {
       $handle = $instance['handle'];
       $url = static::embed_url($handle, $topic);
 
@@ -58,14 +59,11 @@ abstract class MultiPollsWidget extends \WP_Widget {
        * link or thing that sdk.js replaces with an iframe.
        */
 ?>
-<iframe src="<? echo esc_attr($url); ?>"
+<iframe src="<?php echo esc_attr($url); ?>"
         style="display: block; border: none; outline: none;
-               min-width: 295px; height: <? echo esc_attr($height)?>;">
+               min-width: 295px; height: <?php echo esc_attr($height)?>;">
 </iframe>
 <?php
-
-    } else {
-      echo '<p>Missing the handle for this widget (set in admin).</p>';
     }
 
     echo $after_widget;
@@ -86,10 +84,10 @@ abstract class MultiPollsWidget extends \WP_Widget {
       $title = __('Poll', 'text_domain');
     }
 
-    if (isset($instance['handle'])) {
+    if (static::NEEDS_HANDLE && isset($instance['handle'])) {
       $handle = $instance['handle'];
     }
-    else {
+    else if (static::NEEDS_HANDLE) {
       $handle = static::DEFAULT_HANDLE;
     }
 
@@ -115,12 +113,14 @@ abstract class MultiPollsWidget extends \WP_Widget {
          name="<?php echo $this->get_field_name( 'title' ); ?>"
          type="text" value="<?php echo esc_attr( $title ); ?>">
 
+<?php if (static::NEEDS_HANDLE): ?>
   <label for="<?php echo $this->get_field_id( 'handle' ); ?>">
     <?php _e( 'FanMob user or group name:' ); // FIXME ?>
   </label>
   <input class="widefat" id="<?php echo $this->get_field_id( 'handle' ); ?>"
          name="<?php echo $this->get_field_name( 'handle' ); ?>"
          type="text" value="<?php echo esc_attr( $handle ); ?>">
+<?php endif; ?>
 
   <label for="<?php echo $this->get_field_id( 'topic' ); ?>">
     <?php _e( 'Topic (optional):' ); ?>
@@ -151,7 +151,9 @@ abstract class MultiPollsWidget extends \WP_Widget {
   public function update($new_instance, $old_instance) {
     $instance = array();
     $instance['title'] = (!empty($new_instance['title'])) ? $new_instance['title'] : '';
-    $instance['handle'] = (!empty($new_instance['handle'])) ? $new_instance['handle'] : null;
+    if (static::NEEDS_HANDLE) {
+      $instance['handle'] = (!empty($new_instance['handle'])) ? $new_instance['handle'] : null;
+    }
     $instance['topic'] = (!empty($new_instance['topic'])) ? $new_instance['topic'] : null;
     $instance['height'] = (!empty($new_instance['height'])) ?
       intval($new_instance['height'])
